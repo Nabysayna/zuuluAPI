@@ -16,31 +16,31 @@
         </xsd:schema>
     </types>
 
-    <message name="helloRequest">
-        <part name="name" type="xsd:string"/>
+    <message name="baseRequest">
+        <part name="credentiales" type="xsd:string"/>
     </message>
 
-    <message name="helloResponse">
+    <message name="baseResponse">
         <part name="return" type="xsd:string"/>
     </message>
 
     <portType name="hellowsdlPortType">
-        <operation name="hello">
+        <operation name="connection">
             <documentation>Connection</documentation>
-            <input message="tns:helloRequest"/>
-            <output message="tns:helloResponse"/>
+            <input message="tns:baseRequest"/>
+            <output message="tns:baseResponse"/>
         </operation>
         <operation name="heartbeat">
             <documentation>HeartBeat</documentation>
-            <input message="tns:helloRequest"/>
-            <output message="tns:helloResponse"/>
+            <input message="tns:baseRequest"/>
+            <output message="tns:baseResponse"/>
         </operation>
     </portType>
 
     <binding name="hellowsdlBinding" type="tns:hellowsdlPortType">
         <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
-        <operation name="hello">
-            <soap:operation soapAction="urn:arnleadservicewsdl#hello" style="rpc"/>
+        <operation name="connection">
+            <soap:operation soapAction="urn:arnleadservicewsdl#connection" style="rpc"/>
 
             <input>
                 <soap:body use="encoded" namespace="urn:hellowsdl"
