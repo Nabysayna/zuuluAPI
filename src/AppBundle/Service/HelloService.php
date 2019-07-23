@@ -26,12 +26,14 @@ class HelloService
 
         $credentiales = json_decode($name) ;
 
-        if($credentiales->login == 'testUser' && $credentiales->digest == '0b80dbcf8793466dcc4841f336041876' ){
+	$calculatedDigest = sha1('testUser'.sha1('passer').$credentiales->timestamp) ;
+
+        if($credentiales->login == 'testUser' && $credentiales->digest == $calculatedDigest ){
             $baseDigest = base64_encode(sha1($credentiales->login."Da8H@dd_dh".$credentiales->digest)) ;
             return json_encode(array('codeRetour' => '1', 'baseDigest' => $baseDigest ));
         }
         else
-            return json_encode(array('codeRetour' => '0', 'baseDigest' => $name ));
+            return json_encode(array('codeRetour' => '0', 'baseDigest' =>'fdfdf' ));
 
     }
 

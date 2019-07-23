@@ -3,11 +3,11 @@
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
-    xmlns:tns="urn:arnleadservicewsdl"
+    xmlns:tns="urn:hellowsdl"
     xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
     xmlns="http://schemas.xmlsoap.org/wsdl/"
-    targetNamespace="urn:helloservicewsdl">
+    targetNamespace="urn:hellowsdl">
     
     <types>
         <xsd:schema targetNamespace="urn:hellowsdl">
@@ -24,23 +24,42 @@
         <part name="return" type="xsd:string"/>
     </message>
 
-    <portType name="hellowsdlPortType">
+
+    <message name="heartbeatRequest">
+        <part name="credentiales" type="xsd:string"/>
+    </message>
+
+    <message name="heartbeatResponse">
+        <part name="return" type="xsd:string"/>
+    </message>
+
+
+    <message name="connectionRequest">
+        <part name="credentiales" type="xsd:string"/>
+    </message>
+
+    <message name="connectionResponse">
+        <part name="return" type="xsd:string"/>
+    </message>
+
+
+    <portType name="helloPortType">
         <operation name="connection">
             <documentation>Connection</documentation>
-            <input message="tns:baseRequest"/>
-            <output message="tns:baseResponse"/>
+            <input message="tns:connectionRequest"/>
+            <output message="tns:connectionResponse"/>
         </operation>
         <operation name="heartbeat">
             <documentation>HeartBeat</documentation>
-            <input message="tns:baseRequest"/>
-            <output message="tns:baseResponse"/>
+            <input message="tns:heartbeatRequest"/>
+            <output message="tns:heartbeatResponse"/>
         </operation>
     </portType>
 
-    <binding name="hellowsdlBinding" type="tns:hellowsdlPortType">
+    <binding name="helloBinding" type="tns:helloPortType">
         <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
         <operation name="connection">
-            <soap:operation soapAction="urn:arnleadservicewsdl#connection" style="rpc"/>
+            <soap:operation soapAction="urn:hellowsdl#connection" style="rpc"/>
 
             <input>
                 <soap:body use="encoded" namespace="urn:hellowsdl"
@@ -55,7 +74,7 @@
 
 
         <operation name="heartbeat">
-            <soap:operation soapAction="urn:arnleadservicewsdl#heartbeat" style="rpc"/>
+            <soap:operation soapAction="urn:hellowsdl#heartbeat" style="rpc"/>
 
             <input>
                 <soap:body use="encoded" namespace="urn:hellowsdl"
@@ -71,8 +90,8 @@
     </binding>
 
     <service name="hellowsdl">
-        <port name="hellowsdlPort" binding="tns:hellowsdlBinding">
-            <soap:address location="http://localhost:8000/"/>
+        <port name="helloPortType" binding="tns:helloBinding">
+            <soap:address location="http://51.38.234.197/zuuluAPIBaseMS/web/app_dev.php"/>
         </port>
     </service>
     
