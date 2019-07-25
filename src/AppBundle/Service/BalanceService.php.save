@@ -1,31 +1,41 @@
 <?php
+namespace AppBundle\Service;
 
-namespace AppBundle\Controller;
-
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use AppBundle\Entity\Users ;
+use Doctrine\ORM\EntityManagerInterface;
 
 
-
-class BalanceController extends Controller
+class BalanceService
 {
 
+   private $em ;
 
-    public function __construct() {
-      ;
+   private $fromCustomer ;
+
+   private $pin ;
+
+
+    public function __construct(EntityManagerInterface $em){
+       $this->em = $em ;
+
+      $dbuser = $this->em->getRepository('AppBundle:Users')->findOneBy(array('iduser' => 'testUser' )) ;
+
+      if (!empty($dbuser) ) {
+        $this->fromCustomer = explode('#', $dbuser->getCredzuulu() )[0] ;
+        $this->pin = explode('#', $dbuser->getCredzuulu() )[1] ;
+      }
+      else{
+        $this->fromCustomer = "0" ;
+        $this->pin = "0" ;
+      }
+
     }
 
 
-    /**
-     * @Route("/balc", name="balcpage")
-     */
-    public function indexAction()
+    public function getBalance()
     {
 
-     $response = new Response();
-
+     if (strcm)
       $requeteParams = '<?xml version="1.0" encoding="UTF-8" ?><Request FN="BALC" fromCustmer="221766459226" PIN="040186" deviceModel="SM-E7000" devicePlatform="Android" deviceVersion="4.4.2" deviceManufacturer="samsung" packageName="com.zuulu.zuulu" versionNumber="1.0.11" isVirtualDevice="false" geoLatitude="" geoLongitude="" appClientName="Samba Diallo" appType="production" deviceIP="154.124.94.88" ipLocationCode="SN" uniqueDeviceKey="1562157795903" LN="FR"></Request>' ;
 
       $curl = curl_init();
@@ -49,11 +59,18 @@ class BalanceController extends Controller
       curl_close($curl);
 
       if ($err) {
-        $response->setContent($err);
+        return "0" ;
       } else {
-        $response->setContent($responseCurl);
+
+      $resXML = new \SimpleXMLElement($responseCurl) ;
+
+      return $this->fromCustomer." ---  ".$this->pin ;
+
+      return $resXML->ResponseMessage ;
+
+
       }
 
-      return $response ;
     }
+
 }

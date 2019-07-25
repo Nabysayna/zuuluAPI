@@ -1,0 +1,61 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Authorizedsessions
+ *
+ * @ORM\Table(name="authorizedSessions")
+ * @ORM\Entity
+ */
+class Authorizedsessions
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="iduser", type="integer", nullable=false)
+     */
+    private $iduser;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="credzuulu", type="string", length=80, nullable=false)
+     */
+    private $credzuulu;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="randomdigest", type="string", length=80, nullable=false)
+     */
+    private $randomdigest;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="datecreation", type="datetime", nullable=false)
+     */
+    private $datecreation;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="validite", type="integer", nullable=false)
+     */
+    private $validite;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+
+}
+

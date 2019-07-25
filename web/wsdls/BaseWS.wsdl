@@ -43,6 +43,17 @@
     </message>
 
 
+    <message name="getBalanceRequest">
+        <part name="idclient" type="xsd:string"/>
+        <part name="digest" type="xsd:string"/>
+    </message>
+
+    <message name="getBalanceResponse">
+        <part name="return" type="xsd:string"/>
+    </message>
+
+
+
     <portType name="helloPortType">
         <operation name="connection">
             <documentation>Connection</documentation>
@@ -53,6 +64,11 @@
             <documentation>HeartBeat</documentation>
             <input message="tns:heartbeatRequest"/>
             <output message="tns:heartbeatResponse"/>
+        </operation>
+        <operation name="getBalance">
+            <documentation>Get Balance</documentation>
+            <input message="tns:getBalanceRequest"/>
+            <output message="tns:getBalanceResponse"/>
         </operation>
     </portType>
 
@@ -86,6 +102,22 @@
                     encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
             </output>
         </operation>
+
+        <operation name="getBalance">
+            <soap:operation soapAction="urn:hellowsdl#getBalance" style="rpc"/>
+
+            <input>
+                <soap:body use="encoded" namespace="urn:hellowsdl"
+                    encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+
+            <output>
+                <soap:body use="encoded" namespace="urn:hellowsdl"
+                    encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+
+
 
     </binding>
 

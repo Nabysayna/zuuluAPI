@@ -1,12 +1,44 @@
 <?php
 namespace AppBundle\Service;
 
+use AppBundle\Entity\Users ;
+use Doctrine\ORM\EntityManagerInterface;
+
+
 class BalanceService
 {
+
+   private $em ;
+
+   private $fromCustomer ;
+
+   private $pin ;
+
+
+    public function __construct(EntityManagerInterface $em){
+       $this->em = $em ;
+
+      $dbuser = $this->em->getRepository('AppBundle:Users')->findOneBy(array('iduser' => 'testUser' )) ;
+
+      if (!empty($dbuser) ) {
+        $this->fromCustomer = explode('#', $dbuser->getCredzuulu() )[0] ;
+        $this->pin = explode('#', $dbuser->getCredzuulu() )[1] ;
+      }
+      else{
+        $this->fromCustomer = "0" ;
+        $this->pin = "0" ;
+      }
+
+    }
+
+
     public function getBalance()
     {
-      $requeteParams = '<?xml version="1.0" encoding="UTF-8" ?><Request FN="BALC" fromCustmer="221766459226" PIN="040186" deviceModel="SM-E7000" devicePlatform="Android" deviceVersion="4.4.2" deviceManufacturer="samsung" packageName="com.zuulu.zuulu" versionNumber="1.0.11" isVirtualDevice="false" geoLatitude="" geoLongitude="" appClientName="Samba Diallo" appType="production" deviceIP="154.124.94.88" ipLocationCode="SN" uniqueDeviceKey="1562157795903" LN="FR"></Request>' ;
 
+      if(strcmp($this->pin, "0")==0)
+	      return  json_encode( array("codeRetour"=>"0","message"=> "Erreur Serveur" )) ;
+      
+      $requeteParams = '<?xml version="1.0" encoding="UTF-8" ?><Request FN="BALC" fromCustmer="'.$this->fromCustomer.'" PIN="'.$this->pin.'" deviceModel="SM-E7000" devicePlatform="Android" deviceVersion="4.4.2" deviceManufacturer="samsung" packageName="com.zuulu.zuulu" versionNumber="1.0.11" isVirtualDevice="false" geoLatitude="" geoLongitude="" appClientName="Samba Diallo" appType="production" deviceIP="154.124.94.88" ipLocationCode="SN" uniqueDeviceKey="1562157795903" LN="FR"></Request>' ;
       $curl = curl_init();
       curl_setopt_array($curl, array(
       CURLOPT_URL => "http://194.187.94.199:5053/zuulu",
@@ -28,9 +60,12 @@ class BalanceService
       curl_close($curl);
 
       if ($err) {
-        return "0" ;
+	      return  json_encode( array("codeRetour"=>"0","message"=> "Erreur Serveur" )) ;
       } else {
-        return "1" ;
+
+	      $resXML = new \SimpleXMLElement($responseCurl) ;
+	      return  json_encode( array("codeRetour"=>"1", "solde"=> $resXML->ResponseMessage )) ;
+
       }
 
     }
