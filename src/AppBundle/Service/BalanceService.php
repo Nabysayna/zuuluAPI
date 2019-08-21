@@ -64,7 +64,7 @@ class BalanceService
       } else {
 
 	      $resXML = new \SimpleXMLElement($responseCurl) ;
-	      return  json_encode( array("codeRetour"=>"1", "solde"=> $resXML->ResponseMessage )) ;
+	      return  json_encode( array("codeRetour"=>"1", "solde"=> ((array)$resXML->ResponseMessage)["0"] )) ;
 
       }
 

@@ -13,9 +13,9 @@ use Doctrine\ORM\Mapping as ORM;
 class Users
 {
     /**
-     * @var integer
+     * @var string
      *
-     * @ORM\Column(name="iduser", type="integer", nullable=false)
+     * @ORM\Column(name="iduser", type="string", length=50, nullable=false)
      */
     private $iduser;
 
@@ -61,7 +61,7 @@ class Users
     /**
      * Set iduser
      *
-     * @param integer $iduser
+     * @param string $iduser
      *
      * @return Users
      */
@@ -75,7 +75,7 @@ class Users
     /**
      * Get iduser
      *
-     * @return integer
+     * @return string
      */
     public function getIduser()
     {

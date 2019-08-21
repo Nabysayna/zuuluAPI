@@ -1,0 +1,54 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Patterns
+ *
+ * @ORM\Table(name="patterns")
+ * @ORM\Entity
+ */
+class Patterns
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="sizemin", type="integer", nullable=false)
+     */
+    private $sizemin;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="sizemax", type="integer", nullable=false)
+     */
+    private $sizemax;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="servicename", type="string", length=50, nullable=false)
+     */
+    private $servicename;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="servicedesignation", type="string", length=10, nullable=false)
+     */
+    private $servicedesignation;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+
+}
+

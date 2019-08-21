@@ -5,13 +5,10 @@ namespace AppBundle\Service;
 use AppBundle\Service\BalanceService;
 use AppBundle\Service\SDEGetterService;
 use AppBundle\Service\SLCGetterService;
-use AppBundle\Service\BillGetterService;
-use AppBundle\Service\BillPayService;
 
 use Doctrine\ORM\EntityManagerInterface;
 
 use AppBundle\Entity\Authorizedsessions;
-use AppBundle\Entity\Patterns;
 
 class HelloService
 {
@@ -19,20 +16,16 @@ class HelloService
     private $blcServ;
     private $SDEServ;
     private $SLCServ;
-    private $BillServ;
-    private $PayBillServ;
 
     private $em ;
 
-    public function __construct(EntityManagerInterface $em, BalanceService $blcServ, SDEGetterService $SDEServ, SLCGetterService $SLCServ, BillGetterService $BillServ, BillPayService $PayBillServ){
+    public function __construct(EntityManagerInterface $em, BalanceService $blcServ, SDEGetterService $SDEServ, SLCGetterService $SLCServ){
 
       $this->em = $em ;
 
       $this->blcServ = $blcServ ;
       $this->SDEServ = $SDEServ ;
       $this->SLCServ = $SLCServ ;
-      $this->BillServ = $BillServ ;
-      $this->PayBillServ =  $PayBillServ ;
 
     }
 
@@ -89,12 +82,12 @@ class HelloService
 	else
 		$rti = $rti."1" ;
 
-	if (strcmp(json_encode($this->SDEServ->getBillSDE("8691301356", "221766459226#040186", "SDE", "WEPPOI")), "0")==0)
+	if (strcmp($this->SDEServ->getBillSDE(), "0")==0)
 		$rti = $rti."0";
 	else
 		$rti = $rti."1" ;
 
-	if (strcmp(json_encode($this->SLCServ->getBillSLC("8691301356", "221766459226#040186", "SENELEC", "GEPPOI")), "0")==0)
+	if (strcmp($this->SLCServ->getBillSLC("8691301356", "221766459226#040186"), "0")==0)
 		$rti = $rti."0";
 	else
 		$rti = $rti."1" ;
@@ -104,74 +97,35 @@ class HelloService
     }
 
 
-    public function getBalance($param1, $currentDigest)
+    public function getBalance($param1, $param2)
     {
-       $dbAuthSession = $this->em->getRepository('AppBundle:Authorizedsessions')->findOneBy(array('randomdigest' => $currentDigest )) ;
-
-       if (empty($dbAuthSession) )
-            return json_encode(array('codeRetour' => '0', 'message' => 'Not authorized' ));
-       else
-          return  $this->blcServ->getBalance()  ;
+        return  $this->blcServ->getBalance()  ;
     }
 
 
     public function getBillInfo($ref, $currentDigest)
     {
 
-       $dbAuthSession = $this->em->getRepository('AppBundle:Authorizedsessions')->findOneBy(array('randomdigest' => $currentDigest )) ;
-
-       if (empty($dbAuthSession) )
-            return json_encode(array('codeRetour' => '0', 'message' => 'Not authorized' ));
-       else{
-	    $dbPattern =  $this->getPattern($ref);
-
-	    if( strcmp('None', $dbPattern)==0 )
-		return json_encode(array('codeRetour'=>-2, 'message'=> 'Invalid reference provided')) ;
-            else{
- 		$potentialBiller = json_decode($dbPattern) ;
-		$bills = array() ;
-                foreach ($potentialBiller as $potBill){
-		    $returnedObject = $this->BillServ->getBill( $ref, $dbAuthSession->getCredzuulu(), $potBill->servicename, $potBill->servicedesignation )  ;
-		    if (!empty($returnedObject["bills"]))
-	     	        array_push($bills, $returnedObject ) ;
-//	     	        array_push($bills, $this->BillServ->getBill( $ref, $dbAuthSession->getCredzuulu(), $potBill->servicename, $potBill->servicedesignation ) ) ;
-		}
-
-	    }
-
- 	    if(sizeof($bills)>0)
-		return json_encode( array('codeRetour'=>1, 'data'=> $bills )) ;
- 	    else
-		return json_encode( array('codeRetour'=>-3, 'data'=> [] )) ;
-
-       }
-    }
-
-
-    public function payBill($reference, $invoiceNumber, $currentDigest)
-    {
+      return $this->getPattern($ref);
 
        $dbAuthSession = $this->em->getRepository('AppBundle:Authorizedsessions')->findOneBy(array('randomdigest' => $currentDigest )) ;
 
        if (empty($dbAuthSession) )
             return json_encode(array('codeRetour' => '0', 'message' => 'Not authorized' ));
        else{
-	    return $this->PayBillServ->payBillSDE($reference, $invoiceNumber, '') ;
-            return json_encode(array('codeRetour' => '1', 'message' => 'Pay Bill ::) '.$reference.' '.$invoiceNumber)) ;
+	    $dbPattern = $this->em->getRepository('AppBundle:Patterns')->findOneBy(array('randomdigest' => $currentDigest )) ;
+	    return $this->SLCServ->getBillSLC( $ref, $dbAuthSession->getCredzuulu() ) ;
        }
 
     }
-
-
-
 
    public function getPattern($ref)
    {
-
+   
     $refSize = strlen($ref) ;    
 
     $query = $this->em->createQuery(
-        'SELECT p.servicename, p.servicedesignation
+        'SELECT p
         FROM AppBundle\Entity\Patterns p
         WHERE p.sizemin <= :refSize and  p.sizemax >= :refSize'
     )->setParameter('refSize', $refSize);
@@ -179,9 +133,9 @@ class HelloService
     $patterns = $query->execute() ;
 
     if (empty($patterns))
-	return 'None' ;
+	return 'No corresponding pattern' ;
     else
-      return json_encode($patterns) ;
+      return json_enco$patterns[O] ;
 
 
    }

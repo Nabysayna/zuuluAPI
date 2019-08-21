@@ -52,6 +52,26 @@
         <part name="return" type="xsd:string"/>
     </message>
 
+    <message name="getBillInfoRequest">
+        <part name="reference" type="xsd:string"/>
+        <part name="digest" type="xsd:string"/>
+    </message>
+
+    <message name="getBillInfoResponse">
+        <part name="return" type="xsd:string"/>
+    </message>
+
+
+    <message name="payBillRequest">
+        <part name="reference" type="xsd:string"/>
+        <part name="invoiceNumber" type="xsd:string"/>
+        <part name="digest" type="xsd:string"/>
+    </message>
+
+    <message name="payBillResponse">
+        <part name="return" type="xsd:string"/>
+    </message>
+
 
 
     <portType name="helloPortType">
@@ -70,6 +90,17 @@
             <input message="tns:getBalanceRequest"/>
             <output message="tns:getBalanceResponse"/>
         </operation>
+        <operation name="getBillInfo">
+            <documentation>Get Bill Information corresponding to a given reference</documentation>
+            <input message="tns:getBillInfoRequest"/>
+            <output message="tns:getBillInfoResponse"/>
+        </operation>
+        <operation name="payBill">
+            <documentation>Pay a list of Bill corresponding to given references</documentation>
+            <input message="tns:payBillRequest"/>
+            <output message="tns:payBillResponse"/>
+        </operation>
+
     </portType>
 
     <binding name="helloBinding" type="tns:helloPortType">
@@ -105,6 +136,34 @@
 
         <operation name="getBalance">
             <soap:operation soapAction="urn:hellowsdl#getBalance" style="rpc"/>
+
+            <input>
+                <soap:body use="encoded" namespace="urn:hellowsdl"
+                    encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+
+            <output>
+                <soap:body use="encoded" namespace="urn:hellowsdl"
+                    encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+
+        <operation name="getBillInfo">
+            <soap:operation soapAction="urn:hellowsdl#getBillInfo" style="rpc"/>
+
+            <input>
+                <soap:body use="encoded" namespace="urn:hellowsdl"
+                    encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+
+            <output>
+                <soap:body use="encoded" namespace="urn:hellowsdl"
+                    encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+
+        <operation name="payBill">
+            <soap:operation soapAction="urn:hellowsdl#payBill" style="rpc"/>
 
             <input>
                 <soap:body use="encoded" namespace="urn:hellowsdl"
